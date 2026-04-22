@@ -1,0 +1,312 @@
+# Universe configuration for Portfolio Risk Backtesting Toolkit
+# Each sleeve defines the preferred LSEG RIC, a fallback RIC, the price field,
+# and metadata used throughout the toolkit.
+#
+# LSEG FIELD NOTES:
+#   TR.PriceClose  -> Refinitiv Data API (refinitiv.data / lseg.data)
+#   CF_CLOSE       -> Eikon Python API fallback
+#   Both return adjusted close price. Total return (TR.TotalReturn) requires
+#   premium entitlement and is used only if explicitly available.
+#
+# ENTITLEMENT WARNING:
+#   Exchange-suffixed RICs (e.g. IGLT.L, IBGE.AS) require exchange data
+#   entitlements. If unavailable, the fallback RIC is used.
+
+base_currency: "USD"
+default_start_date: "2004-01-01"
+default_end_date: null  # null resolves to today at runtime
+
+sleeves:
+
+  # ─── EQUITIES ────────────────────────────────────────────────────────────
+
+  - id: "us_large_cap"
+    name: "US Large Cap Equity"
+    primary_ric: "SPY"
+    fallback_ric: "IVV"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "US Equity"
+    inception_date: "1993-01-29"
+    notes: "SPDR S&P 500 ETF Trust. Most liquid US large cap proxy."
+
+  - id: "us_tech"
+    name: "US Tech / Growth"
+    primary_ric: "QQQ"
+    fallback_ric: "VGT"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "US Tech"
+    inception_date: "1999-03-10"
+    notes: "Invesco QQQ (Nasdaq-100). Best liquid tech/growth proxy."
+
+  - id: "europe_equity"
+    name: "Europe Equity"
+    primary_ric: "EZU"
+    fallback_ric: "VGK"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "European Equity"
+    inception_date: "2000-07-25"
+    notes: "iShares MSCI Eurozone ETF. USD-denominated, FX embedded."
+
+  - id: "uk_equity"
+    name: "UK Equity"
+    primary_ric: "EWU"
+    fallback_ric: "ISF.L"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "UK Equity"
+    inception_date: "1996-03-18"
+    notes: "iShares MSCI United Kingdom ETF. USD-listed, contains GBP FX."
+
+  - id: "japan_equity"
+    name: "Japan Equity"
+    primary_ric: "EWJ"
+    fallback_ric: "HEWJ"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "Japan Equity"
+    inception_date: "1996-03-18"
+    notes: "iShares MSCI Japan ETF. USD-listed, contains JPY FX."
+
+  - id: "emerging_markets"
+    name: "Emerging Markets Equity"
+    primary_ric: "EEM"
+    fallback_ric: "VWO"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "EM Equity"
+    inception_date: "2003-04-07"
+    notes: "iShares MSCI EM ETF. Available from 2003."
+
+  - id: "us_small_cap"
+    name: "US Small Cap Equity"
+    primary_ric: "IWM"
+    fallback_ric: "VB"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "US Small Cap"
+    inception_date: "2000-05-22"
+    notes: "iShares Russell 2000 ETF."
+
+  - id: "global_min_vol"
+    name: "Global Minimum Volatility"
+    primary_ric: "USMV"
+    fallback_ric: "SPLV"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Equity"
+    sub_class: "Defensive Equity"
+    inception_date: "2011-10-18"
+    notes: >
+      iShares MSCI USA Min Vol Factor ETF. Inception 2011 limits backtest to
+      post-2012 for this sleeve. In demo mode, synthetic history from 2004.
+
+  # ─── SOVEREIGN BONDS ─────────────────────────────────────────────────────
+
+  - id: "us_treasury_short"
+    name: "US Treasuries 1-3Y"
+    primary_ric: "SHY"
+    fallback_ric: "VGSH"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Sovereign Bond"
+    sub_class: "US Rates Short"
+    inception_date: "2002-07-22"
+    notes: "iShares 1-3 Year Treasury Bond ETF. Low duration, rate-sensitive."
+
+  - id: "us_treasury_medium"
+    name: "US Treasuries 7-10Y"
+    primary_ric: "IEF"
+    fallback_ric: "VGIT"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Sovereign Bond"
+    sub_class: "US Rates Medium"
+    inception_date: "2002-07-22"
+    notes: "iShares 7-10 Year Treasury Bond ETF. Core duration exposure."
+
+  - id: "euro_govt"
+    name: "Euro Government Bonds"
+    primary_ric: "IBGE.AS"
+    fallback_ric: "EXX6.DE"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "EUR"
+    asset_class: "Sovereign Bond"
+    sub_class: "European Rates"
+    inception_date: "2005-11-15"
+    notes: >
+      iShares Euro Government Bond ETF (Amsterdam). EUR-denominated.
+      ENTITLEMENT RISK: exchange suffix requires EU market data entitlement.
+      EXX6.DE (Xetra) is secondary fallback.
+
+  - id: "us_tips"
+    name: "US Inflation-Linked (TIPS)"
+    primary_ric: "TIP"
+    fallback_ric: "SCHP"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Sovereign Bond"
+    sub_class: "Inflation-Linked"
+    inception_date: "2003-12-04"
+    notes: "iShares TIPS Bond ETF. Inflation sensitivity."
+
+  - id: "uk_gilts"
+    name: "UK Gilts"
+    primary_ric: "IGLT.L"
+    fallback_ric: "VGOV.L"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "GBP"
+    asset_class: "Sovereign Bond"
+    sub_class: "UK Rates"
+    inception_date: "2006-03-27"
+    notes: >
+      iShares Core UK Gilts ETF (London). GBP-denominated.
+      ENTITLEMENT RISK: LSE suffix requires UK market data entitlement.
+
+  # ─── CREDIT ──────────────────────────────────────────────────────────────
+
+  - id: "us_ig_credit"
+    name: "US Investment Grade Credit"
+    primary_ric: "LQD"
+    fallback_ric: "VCIT"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Credit"
+    sub_class: "US IG Credit"
+    inception_date: "2002-07-22"
+    notes: "iShares iBoxx USD Investment Grade Corporate Bond ETF."
+
+  - id: "us_hy_credit"
+    name: "US High Yield Credit"
+    primary_ric: "HYG"
+    fallback_ric: "JNK"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Credit"
+    sub_class: "US HY Credit"
+    inception_date: "2007-04-04"
+    notes: "iShares iBoxx USD High Yield Corporate Bond ETF. History from 2007."
+
+  - id: "euro_ig_credit"
+    name: "Euro Investment Grade Credit"
+    primary_ric: "IEAC.AS"
+    fallback_ric: "EXH3.DE"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "EUR"
+    asset_class: "Credit"
+    sub_class: "Euro IG Credit"
+    inception_date: "2003-01-22"
+    notes: >
+      iShares Euro Corporate Bond ETF (Amsterdam). EUR-denominated.
+      ENTITLEMENT RISK: exchange suffix may require EU market data entitlement.
+
+  - id: "euro_hy_credit"
+    name: "Euro High Yield Credit"
+    primary_ric: "IHYG.AS"
+    fallback_ric: "HYB.DE"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "EUR"
+    asset_class: "Credit"
+    sub_class: "Euro HY Credit"
+    inception_date: "2010-02-25"
+    notes: >
+      iShares Euro High Yield Corporate Bond ETF (Amsterdam).
+      ENTITLEMENT RISK: exchange suffix. History only from 2010.
+
+  # ─── REAL ASSETS & COMMODITIES ───────────────────────────────────────────
+
+  - id: "gold"
+    name: "Gold"
+    primary_ric: "GLD"
+    fallback_ric: "IAU"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Commodity"
+    sub_class: "Precious Metals"
+    inception_date: "2004-11-18"
+    notes: "SPDR Gold Shares ETF. Standard gold proxy."
+
+  - id: "brent_crude"
+    name: "Brent Crude Oil"
+    primary_ric: "BNO"
+    fallback_ric: "LCOc1"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Commodity"
+    sub_class: "Energy"
+    inception_date: "2010-06-02"
+    notes: >
+      United States Brent Oil Fund ETF. BNO launched 2010.
+      LCOc1 (Brent front-month futures) is the futures fallback with longer history
+      but requires futures/commodities entitlement in LSEG.
+
+  - id: "broad_commodities"
+    name: "Broad Commodities"
+    primary_ric: "PDBC"
+    fallback_ric: "DJP"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Commodity"
+    sub_class: "Broad Commodities"
+    inception_date: "2014-11-07"
+    notes: >
+      Invesco Optimum Yield Diversified Commodity Strategy ETF.
+      DJP (iPath Bloomberg Commodity) is older fallback (inception 2006).
+      Diversified: energy, metals, agriculture.
+
+  - id: "reits"
+    name: "REITs / Listed Real Estate"
+    primary_ric: "VNQ"
+    fallback_ric: "IYR"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Real Estate"
+    sub_class: "Listed Real Estate"
+    inception_date: "2004-09-23"
+    notes: "Vanguard Real Estate ETF. Listed REIT exposure."
+
+  # ─── CASH PROXY ──────────────────────────────────────────────────────────
+
+  - id: "cash"
+    name: "Cash (USD T-Bill)"
+    primary_ric: "BIL"
+    fallback_ric: "SHV"
+    primary_field: "TR.PriceClose"
+    fallback_field: "CF_CLOSE"
+    currency: "USD"
+    asset_class: "Cash"
+    sub_class: "Money Market"
+    inception_date: "2007-05-25"
+    notes: >
+      SPDR Bloomberg 1-3 Month T-Bill ETF. Used as risk-free rate proxy
+      and as a portfolio sleeve in defensive allocations. BIL launched 2007.

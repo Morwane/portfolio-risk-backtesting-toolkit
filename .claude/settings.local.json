@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python scripts/run_backtest.py --demo --portfolio all)"
+    ]
+  }
+}

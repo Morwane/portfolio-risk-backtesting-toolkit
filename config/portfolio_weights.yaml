@@ -1,0 +1,97 @@
+# Portfolio weight configurations
+# Weights must sum to 1.0 within each portfolio.
+# Use sleeve IDs from universe.yaml.
+#
+# Supported modes:
+#   static          -> weights held fixed, rebalanced at configured frequency
+#   equal_weight    -> weights computed dynamically (null weights)
+#
+# For stress test comparisons you can run multiple portfolios simultaneously.
+
+portfolios:
+
+  strategic_diversified:
+    name: "Strategic Diversified Portfolio"
+    description: >
+      Broadly diversified multi-asset portfolio. Equity-tilted (55%) with
+      significant fixed income diversification (30%) and real assets (15%).
+      Representative of a moderate-risk long-term allocation.
+    mode: "static"
+    weights:
+      # Equities: 55%
+      us_large_cap: 0.14
+      us_tech: 0.08
+      europe_equity: 0.07
+      uk_equity: 0.04
+      japan_equity: 0.04
+      emerging_markets: 0.07
+      us_small_cap: 0.05
+      global_min_vol: 0.06
+      # Sovereign Bonds: 18%
+      us_treasury_short: 0.04
+      us_treasury_medium: 0.08
+      euro_govt: 0.04
+      us_tips: 0.02
+      # Credit: 12%
+      us_ig_credit: 0.05
+      us_hy_credit: 0.03
+      euro_ig_credit: 0.03
+      euro_hy_credit: 0.01
+      # Real Assets & Commodities: 13%
+      gold: 0.05
+      brent_crude: 0.02
+      broad_commodities: 0.02
+      reits: 0.04
+      # Cash: 2%
+      cash: 0.02
+
+  balanced_60_40:
+    name: "Classic 60/40 Balanced"
+    description: >
+      Traditional 60% equity / 40% bonds portfolio.
+      Benchmark reference for performance comparison.
+    mode: "static"
+    weights:
+      # Equities: 60%
+      us_large_cap: 0.25
+      us_tech: 0.10
+      europe_equity: 0.10
+      uk_equity: 0.05
+      japan_equity: 0.05
+      emerging_markets: 0.05
+      # Bonds: 40%
+      us_treasury_short: 0.08
+      us_treasury_medium: 0.16
+      us_ig_credit: 0.08
+      euro_govt: 0.08
+
+  defensive:
+    name: "Defensive Allocation"
+    description: >
+      Risk-off positioning. Heavy bond and gold weighting.
+      Used for stress test comparisons.
+    mode: "static"
+    weights:
+      # Defensive Equity: 20%
+      us_large_cap: 0.08
+      global_min_vol: 0.12
+      # Bonds: 55%
+      us_treasury_short: 0.12
+      us_treasury_medium: 0.18
+      euro_govt: 0.10
+      us_tips: 0.08
+      us_ig_credit: 0.07
+      # Real Assets: 20%
+      gold: 0.12
+      broad_commodities: 0.04
+      reits: 0.04
+      # Cash: 5%
+      cash: 0.05
+
+  equal_weight:
+    name: "Equal Weight"
+    description: >
+      Naive 1/N equal weight across all available sleeves.
+      Computed dynamically at runtime based on available universe.
+    mode: "equal_weight"
+    weights: null

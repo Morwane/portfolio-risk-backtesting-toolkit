@@ -1,0 +1,64 @@
+# Global settings for Portfolio Risk Backtesting Toolkit
+
+lseg:
+  # Session type: "platform" (LSEG Workspace/Eikon desktop),
+  #               "deployed" (cloud/server deployment with credentials file),
+  #               "desktop" (alias for platform)
+  session_type: "platform"
+  # Environment variable names for credentials (deployed mode only)
+  app_key_env: "LSEG_APP_KEY"
+  client_id_env: "LSEG_CLIENT_ID"
+  client_secret_env: "LSEG_CLIENT_SECRET"
+  # Request throttling
+  request_timeout_seconds: 30
+  max_retries: 3
+  retry_delay_seconds: 5
+
+data:
+  cache_dir: "data/processed"
+  raw_dir: "data/raw"
+  sample_dir: "data/sample"
+  # Price field preference order
+  price_field_priority:
+    - "TR.PriceClose"   # refinitiv.data / lseg.data API
+    - "CF_CLOSE"        # Eikon API
+    - "CLOSE"           # Eikon timeseries fallback
+  use_total_return_if_available: false  # TR.TotalReturn requires premium entitlement
+  cache_format: "parquet"               # "parquet" or "csv"
+  max_cache_age_days: 1                 # Refresh cache if older than N days
+
+analytics:
+  risk_free_rate_annual: 0.045          # Used for Sharpe/Sortino (update as needed)
+  trading_days_per_year: 252
+  var_confidence_levels: [0.95, 0.99]
+  es_confidence_level: 0.95
+  rolling_window_days: 252              # 1-year rolling window
+  rolling_window_short_days: 63         # ~1-quarter short window
+  min_history_days: 504                 # Minimum 2 years of data to include a sleeve
+
+backtesting:
+  start_date: "2007-01-01"   # Conservative: most ETFs available from 2007
+  end_date: null              # null = today
+  initial_capital: 100.0      # Index base (normalized)
+  transaction_costs_bps: 2.0  # 2 basis points per rebalancing trade
+  rebalancing_frequency: "quarterly"   # "monthly", "quarterly", "annual", "buy_and_hold"
+  base_currency: "USD"
+
+demo_mode:
+  enabled: false
+  data_path: "data/sample/demo_prices.parquet"
+  start_date: "2004-01-01"
+  end_date: "2024-12-31"
+
+outputs:
+  tables_dir: "outputs/tables"
+  charts_dir: "outputs/charts"
+  reports_dir: "outputs/reports"
+  docs_images_dir: "docs/images"
+  figure_dpi: 150
+  figure_format: "png"
+
+logging:
+  level: "INFO"     # DEBUG, INFO, WARNING, ERROR
+  log_to_file: false
+  log_file: "outputs/backtest.log"

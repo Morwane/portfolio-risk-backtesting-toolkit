@@ -1,0 +1,184 @@
+# Stress test scenario definitions
+# Two types:
+#   historical_windows: actual market episodes, computed from real/demo returns
+#   custom_shocks: synthetic factor shocks applied to portfolio weights
+
+historical_windows:
+
+  covid_crash:
+    name: "COVID-19 Crash"
+    start: "2020-02-19"
+    end: "2020-03-23"
+    description: >
+      Rapid pandemic-driven global sell-off. Equity markets fell ~34% in 33 days.
+      Bond markets initially sold off (liquidity stress) before reversing.
+    category: "systemic"
+
+  covid_recovery:
+    name: "COVID Recovery Rally"
+    start: "2020-03-23"
+    end: "2020-08-31"
+    description: >
+      V-shaped recovery driven by unprecedented fiscal/monetary stimulus.
+      Risk assets recovered strongly; credit spreads tightened sharply.
+    category: "recovery"
+
+  rate_shock_2022:
+    name: "2022 Rate Shock"
+    start: "2022-01-03"
+    end: "2022-10-13"
+    description: >
+      Most aggressive Fed hiking cycle since the 1980s. Both equities and
+      bonds fell simultaneously — a breakdown of the 60/40 diversification
+      assumption. S&P -25%, AGG -17%.
+    category: "rates"
+
+  gfc_2008:
+    name: "Global Financial Crisis"
+    start: "2008-09-01"
+    end: "2009-03-09"
+    description: >
+      Peak stress phase of the 2008 GFC. Lehman Brothers collapse through
+      market trough. Equities fell ~55% peak to trough; credit spreads
+      blew out to record levels. Gold and US Treasuries were safe havens.
+    category: "systemic"
+
+  oil_collapse_2020:
+    name: "Oil Collapse 2020"
+    start: "2020-02-01"
+    end: "2020-04-28"
+    description: >
+      Demand destruction from COVID lockdowns combined with OPEC+ supply
+      war drove Brent crude to historic lows (briefly negative for WTI).
+    category: "commodity"
+
+  taper_tantrum_2013:
+    name: "Taper Tantrum 2013"
+    start: "2013-05-01"
+    end: "2013-09-05"
+    description: >
+      Bernanke's tapering signal caused a sharp spike in US Treasury yields.
+      EM assets and bonds sold off significantly; equities corrected ~7%.
+    category: "rates"
+
+  eu_debt_crisis:
+    name: "European Debt Crisis"
+    start: "2011-07-01"
+    end: "2011-10-04"
+    description: >
+      Sovereign spread widening in Italy and Spain. Euro fell, European
+      equities dropped ~25%. ECB eventually contained with "whatever it takes".
+    category: "credit"
+
+custom_shocks:
+
+  equity_shock_severe:
+    name: "Equity Shock (Severe, -25%)"
+    description: >
+      Broad equity market drawdown equivalent to a severe recession.
+      Correlations between risk assets rise.
+    shocks:
+      us_large_cap: -0.25
+      us_tech: -0.32
+      europe_equity: -0.27
+      uk_equity: -0.24
+      japan_equity: -0.22
+      emerging_markets: -0.30
+      us_small_cap: -0.33
+      global_min_vol: -0.17
+      reits: -0.25
+      us_hy_credit: -0.10
+      euro_hy_credit: -0.12
+      us_ig_credit: -0.04
+      euro_ig_credit: -0.05
+      us_treasury_medium: 0.04
+      us_treasury_short: 0.01
+      gold: 0.03
+      brent_crude: -0.15
+      broad_commodities: -0.10
+      euro_govt: 0.03
+      us_tips: 0.01
+      cash: 0.00
+
+  rates_up_100bps:
+    name: "Rates +100bps Parallel Shift"
+    description: >
+      Parallel shift up in the yield curve by 100bps.
+      Duration impact estimated by approximate DV01.
+    shocks:
+      us_treasury_short: -0.015
+      us_treasury_medium: -0.075
+      euro_govt: -0.060
+      uk_gilts: -0.080
+      us_tips: -0.055
+      us_ig_credit: -0.065
+      euro_ig_credit: -0.055
+      us_hy_credit: -0.030
+      euro_hy_credit: -0.025
+      us_large_cap: -0.06
+      us_tech: -0.09
+      europe_equity: -0.05
+      reits: -0.10
+      cash: 0.005
+
+  credit_stress:
+    name: "Credit Spread Widening +250bps"
+    description: >
+      Broad credit spread widening (HY +400bps, IG +150bps equivalent).
+      Risk-off flight to quality benefits government bonds.
+    shocks:
+      us_hy_credit: -0.15
+      euro_hy_credit: -0.17
+      us_ig_credit: -0.07
+      euro_ig_credit: -0.08
+      us_large_cap: -0.07
+      europe_equity: -0.08
+      emerging_markets: -0.10
+      us_treasury_medium: 0.03
+      us_treasury_short: 0.01
+      euro_govt: 0.02
+      gold: 0.02
+      cash: 0.00
+
+  stagflation:
+    name: "Stagflation Shock"
+    description: >
+      Commodity spike + slowdown: inflation up, growth down.
+      Equities and nominal bonds both lose; real assets win.
+    shocks:
+      us_large_cap: -0.18
+      us_tech: -0.24
+      europe_equity: -0.15
+      uk_equity: -0.13
+      japan_equity: -0.12
+      emerging_markets: -0.14
+      us_small_cap: -0.20
+      global_min_vol: -0.11
+      us_treasury_medium: -0.06
+      euro_govt: -0.05
+      uk_gilts: -0.07
+      us_ig_credit: -0.07
+      us_hy_credit: -0.10
+      us_tips: 0.03
+      gold: 0.12
+      brent_crude: 0.25
+      broad_commodities: 0.18
+      reits: -0.08
+      cash: 0.00
+
+  commodity_spike:
+    name: "Commodity Price Spike"
+    description: >
+      Energy and commodity surge (e.g. supply shock / geopolitical).
+      Inflationary pressure, negative for equities, positive for commodity assets.
+    shocks:
+      brent_crude: 0.40
+      broad_commodities: 0.25
+      gold: 0.08
+      us_tips: 0.05
+      us_large_cap: -0.08
+      us_tech: -0.10
+      europe_equity: -0.06
+      us_treasury_medium: -0.03
+      us_ig_credit: -0.03
+      cash: 0.00

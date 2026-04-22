@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "portfolio-risk-backtesting-toolkit"
+version = "0.1.0"
+description = "Multi-asset portfolio backtesting and risk analytics toolkit using LSEG data"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26.0",
+    "pandas>=2.1.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+    "PyYAML>=6.0.1",
+    "pyarrow>=14.0.0",
+]
+
+[project.optional-dependencies]
+lseg = ["lseg-data>=2.0.0"]
+refinitiv = ["refinitiv-data>=1.5.0"]
+eikon = ["eikon>=1.1.16"]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.26.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
