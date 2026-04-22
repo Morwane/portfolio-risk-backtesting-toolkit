@@ -132,16 +132,34 @@ Five synthetic factor shock scenarios: equity severe (-25%), rates +100bps, cred
 | `asset_class_contributions.csv` | Return and risk contribution per sleeve |
 | `rolling_metrics.csv` | Daily rolling volatility and Sharpe ratio |
 
-### Charts (`outputs/charts/`)
-- Cumulative performance
-- Drawdown (underwater equity curve)
-- Rolling volatility
-- Rolling Sharpe ratio
-- Monthly returns heatmap
-- Asset allocation donut
-- Return contribution bar
-- Stress test comparison bar
-- Return distribution with VaR/ES overlay
+## Charts Preview
+
+### Cumulative Performance
+![Cumulative Performance](docs/images/cumulative_performance.png)
+
+### Drawdown
+![Drawdown](docs/images/drawdown.png)
+
+### Monthly Returns Heatmap
+![Monthly Returns Heatmap](docs/images/monthly_returns_heatmap.png)
+
+### Rolling Volatility
+![Rolling Volatility](docs/images/rolling_volatility.png)
+
+### Rolling Sharpe
+![Rolling Sharpe](docs/images/rolling_sharpe.png)
+
+### Asset Allocation
+![Asset Allocation](docs/images/asset_allocation.png)
+
+### Contribution Bar
+![Contribution Bar](docs/images/contribution_bar.png)
+
+### VaR Distribution
+![VaR Distribution](docs/images/var_distribution.png)
+
+### Stress Comparison
+![Stress Comparison](docs/images/stress_comparison.png)
 
 ---
 
