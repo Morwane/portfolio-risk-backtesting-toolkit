@@ -51,3 +51,4 @@ lseg_credentials.json
 # Logs
 *.log
 backtest.log
+.claude/
