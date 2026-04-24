@@ -282,6 +282,8 @@ Five linear first-order approximations across risk buckets: equity severe (−25
   <img src="docs/images/monthly_returns_heatmap.png" width="70%" alt="Monthly Returns Heatmap" />
 </p>
 
+> **Important:** Charts reflect the executed portfolio after LSEG availability checks, cleaning, and weight renormalisation. If a sleeve is unavailable or excluded, this is disclosed in the run manifest and portfolio integrity reports. All analysis is **audit-ready and defensible** for investment committees, risk committees, and regulators.
+
 ---
 
 ## Portfolio Configurations
