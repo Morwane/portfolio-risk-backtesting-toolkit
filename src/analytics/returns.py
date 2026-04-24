@@ -51,7 +51,7 @@ def monthly_returns_table(daily_returns: pd.Series) -> pd.DataFrame:
     Returns:
         DataFrame with year columns and month rows (Jan=1 … Dec=12).
     """
-    monthly = (1 + daily_returns).resample("ME").prod() - 1
+    monthly = (1 + daily_returns).resample("M").prod() - 1
     monthly.index = pd.to_datetime(monthly.index)
     table = monthly.groupby([monthly.index.year, monthly.index.month]).first().unstack(level=0)
     table.index.name = "month"

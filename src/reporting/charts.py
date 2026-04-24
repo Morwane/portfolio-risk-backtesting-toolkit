@@ -14,6 +14,7 @@ Chart catalogue:
   plot_contribution_bar         -> Horizontal bar of cumulative return contributions
   plot_stress_comparison        -> Scenario return bars (no-data excluded)
   plot_var_distribution         -> Return histogram with VaR / ES overlays
+  plot_correlation_heatmap      -> Pairwise correlation matrix heatmap
 """
 
 from __future__ import annotations
@@ -296,11 +297,15 @@ def plot_rolling_sharpe(
     first_series = items[0][1].dropna()
     idx = first_series.index
 
+    # Compute actual data range from all series before plotting so regime bands
+    # span the real y-extent (ax.get_ylim() before any plot returns default (0,1)).
+    _all_vals = np.concatenate([s.dropna().values for _, s in items])
+    _ymin = min(_all_vals.min(), -0.5) * 1.2
+    _ymax = max(_all_vals.max(), 1.5) * 1.2
+
     # Regime shading — helps the reader interpret at a glance
-    ax.fill_between(idx, 1, ax.get_ylim()[1] if ax.get_ylim()[1] > 1 else 4,
-                    alpha=0.04, color="#16A34A", zorder=1)   # above 1 → good
-    ax.fill_between(idx, ax.get_ylim()[0] if ax.get_ylim()[0] < 0 else -3, 0,
-                    alpha=0.04, color="#DC2626", zorder=1)   # below 0 → poor
+    ax.fill_between(idx, 1, _ymax, alpha=0.04, color="#16A34A", zorder=1)  # above 1 → good
+    ax.fill_between(idx, _ymin, 0,  alpha=0.04, color="#DC2626", zorder=1)  # below 0 → poor
 
     # Reference lines — clearly visible
     ax.axhline(0, color="#374151", linewidth=1.0, linestyle="--", zorder=2,
@@ -339,6 +344,7 @@ def plot_rolling_sharpe(
 def plot_monthly_returns_heatmap(
     monthly_table: pd.DataFrame,
     title: str = "Monthly Returns (%)",
+    subtitle: Optional[str] = None,
     save_path: Optional[str] = None,
 ) -> plt.Figure:
     """Plot a calendar heatmap of monthly returns.
@@ -380,7 +386,12 @@ def plot_monthly_returns_heatmap(
         cbar_kws={"label": "Monthly Return (%)", "shrink": 0.8},
         annot_kws={"size": 8, "weight": "normal"},
     )
-    ax.set_title(title, fontsize=13, fontweight="bold", pad=14)
+    ax.set_title(title, fontsize=13, fontweight="bold", pad=26 if subtitle else 14)
+    if subtitle:
+        ax.annotate(subtitle, xy=(0.5, 1.0), xycoords="axes fraction",
+                    xytext=(0, 8), textcoords="offset points",
+                    ha="center", va="bottom", fontsize=7.5,
+                    color="#6B7280", fontstyle="italic", annotation_clip=False)
     ax.set_xlabel("Year", fontsize=10)
     ax.set_ylabel("")
     ax.tick_params(axis="y", rotation=0, labelsize=9)
@@ -542,7 +553,7 @@ def plot_stress_comparison(
     value_col: str = "portfolio_total_return",
     scenario_col: str = "scenario_name",
     group_col: Optional[str] = None,
-    title: str = "Historical Stress Scenarios — Portfolio Return",
+    title: str = "Historical Stress Scenarios",
     save_path: Optional[str] = None,
 ) -> plt.Figure:
     """Bar chart of portfolio returns across historical stress scenarios.
@@ -676,5 +687,45 @@ def plot_var_distribution(
     ax.set_title(title, fontsize=13, fontweight="bold", pad=12)
     ax.legend(framealpha=0.9, edgecolor="#E5E7EB", fontsize=9,
               loc="upper left")
+    fig.tight_layout()
+    return _save_or_return(fig, save_path)
+
+
+# ── 10. Correlation Heatmap ───────────────────────────────────────────────────
+
+def plot_correlation_heatmap(
+    corr: pd.DataFrame,
+    title: str = "Asset Return Correlations",
+    save_path: Optional[str] = None,
+) -> plt.Figure:
+    """Plot a labelled pairwise correlation matrix heatmap (lower triangle).
+
+    Args:
+        corr: Square correlation DataFrame (columns and index = display names).
+        title: Chart title.
+        save_path: Optional save path.
+    """
+    n = len(corr)
+    fig_size = max(8.0, n * 0.55)
+    fig, ax = plt.subplots(figsize=(fig_size, fig_size * 0.85))
+
+    mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
+
+    sns.heatmap(
+        corr,
+        mask=mask,
+        ax=ax,
+        cmap="RdYlGn",
+        vmin=-1.0, vmax=1.0, center=0,
+        annot=True, fmt=".2f",
+        annot_kws={"size": max(6, 9 - n // 5)},
+        linewidths=0.4, linecolor="#E5E7EB",
+        cbar_kws={"shrink": 0.7, "label": "Pearson correlation"},
+        square=True,
+    )
+
+    ax.set_title(title, fontsize=13, fontweight="bold", pad=12)
+    ax.tick_params(axis="x", rotation=45, labelsize=8)
+    ax.tick_params(axis="y", rotation=0, labelsize=8)
     fig.tight_layout()
     return _save_or_return(fig, save_path)

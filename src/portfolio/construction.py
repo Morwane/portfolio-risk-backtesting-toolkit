@@ -30,6 +30,7 @@ def build_portfolio(
     rebalancing_frequency: str = "quarterly",
     initial_value: float = 100.0,
     cost_bps: float = 2.0,
+    track_rebalances: bool = False,
 ) -> Tuple[pd.Series, pd.DataFrame]:
     """Backtest a portfolio with periodic rebalancing.
 
@@ -40,11 +41,15 @@ def build_portfolio(
                                or ``"buy_and_hold"``.
         initial_value: Starting portfolio value (default 100 for indexing).
         cost_bps: One-way transaction cost per rebalancing.
+        track_rebalances: If True, the returned weights_history will contain an
+                          extra column ``_rebal_cost`` with the cost deducted on
+                          each rebalancing date (zero on other dates).
 
     Returns:
         Tuple of:
           - ``nav``: pd.Series of daily portfolio values.
-          - ``weights_history``: pd.DataFrame of daily portfolio weights.
+          - ``weights_history``: pd.DataFrame of daily portfolio weights
+                                 (plus ``_rebal_cost`` when track_rebalances=True).
     """
     # Filter to available sleeves
     available = list(returns.columns)
@@ -61,7 +66,10 @@ def build_portfolio(
 
     for i, date in enumerate(returns.index):
         if i == 0:
-            weight_rows.append({**current_weights, "date": date})
+            row = {**current_weights}
+            if track_rebalances:
+                row["_rebal_cost"] = 0.0
+            weight_rows.append({"date": date, **row})
             continue
 
         # Daily return for each sleeve
@@ -79,23 +87,27 @@ def build_portfolio(
 
         drifted_weights = {s: v / new_portfolio_value for s, v in new_values.items()}
 
+        rebal_cost = 0.0
         # Rebalance if this is a rebalancing date (skip the very first)
         if date in rebal_dates and i > 0:
-            cost = compute_rebalancing_costs(
+            rebal_cost = compute_rebalancing_costs(
                 drifted_weights, weights, new_portfolio_value, cost_bps
             )
-            new_portfolio_value -= cost
+            new_portfolio_value -= rebal_cost
             current_weights = dict(weights)
             logger.debug(
                 "Rebalanced on %s. Cost: %.4f. Portfolio value: %.4f",
-                date.date(), cost, new_portfolio_value,
+                date.date(), rebal_cost, new_portfolio_value,
             )
         else:
             current_weights = drifted_weights
 
         current_value = new_portfolio_value
         nav_values.append(current_value)
-        weight_rows.append({**current_weights, "date": date})
+        row = {**current_weights}
+        if track_rebalances:
+            row["_rebal_cost"] = rebal_cost
+        weight_rows.append({"date": date, **row})
 
     nav = pd.Series(
         nav_values,

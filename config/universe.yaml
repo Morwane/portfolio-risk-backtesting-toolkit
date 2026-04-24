@@ -34,15 +34,19 @@ sleeves:
 
   - id: "us_tech"
     name: "US Tech / Growth"
-    primary_ric: "QQQ"
-    fallback_ric: "VGT"
+    primary_ric: "VGT"
+    fallback_ric: "QQQ"
     primary_field: "TR.PriceClose"
     fallback_field: "CF_CLOSE"
     currency: "USD"
     asset_class: "Equity"
     sub_class: "US Tech"
-    inception_date: "1999-03-10"
-    notes: "Invesco QQQ (Nasdaq-100). Best liquid tech/growth proxy."
+    inception_date: "2004-01-26"
+    notes: >
+      Vanguard Information Technology ETF (VGT). Verified working under current
+      LSEG entitlement via validate_universe.py. QQQ (Invesco Nasdaq-100) set as
+      fallback — QQQ returns 0 rows under this entitlement. VGT inception 2004-01-26;
+      history predates PDBC in-sample window.
 
   - id: "europe_equity"
     name: "Europe Equity"
@@ -106,43 +110,69 @@ sleeves:
 
   - id: "global_min_vol"
     name: "Global Minimum Volatility"
-    primary_ric: "USMV"
-    fallback_ric: "SPLV"
+    primary_ric: "MVOL.L"
+    fallback_ric: "XDWD.DE"
     primary_field: "TR.PriceClose"
     fallback_field: "CF_CLOSE"
-    currency: "USD"
+    currency: "GBP"
     asset_class: "Equity"
     sub_class: "Defensive Equity"
-    inception_date: "2011-10-18"
+    inception_date: "2012-12-13"
     notes: >
-      iShares MSCI USA Min Vol Factor ETF. Inception 2011 limits backtest to
-      post-2012 for this sleeve. In demo mode, synthetic history from 2004.
+      iShares MSCI World Min Vol Factor UCITS ETF (MVOL.L, London-listed, GBP).
+      Tracks MSCI World Minimum Volatility Index (~1600 global stocks), which is
+      actually more faithful to the "global" sleeve label than the original USMV
+      (US-only). MVOL.L verified working via discover_candidates.py; inception
+      2012-12-13. XDWD.DE (Xtrackers MSCI World Min Vol, Xetra, EUR, inception
+      2014-08-15) set as fallback. Both are GBP/EUR denominated — unhedged
+      currency exposure vs USD base. USMV and SPLV both unavailable under current
+      LSEG entitlement.
 
   # ─── SOVEREIGN BONDS ─────────────────────────────────────────────────────
 
   - id: "us_treasury_short"
     name: "US Treasuries 1-3Y"
-    primary_ric: "SHY"
-    fallback_ric: "VGSH"
+    primary_ric: "BSV"
+    fallback_ric: "BSV"
     primary_field: "TR.PriceClose"
     fallback_field: "CF_CLOSE"
     currency: "USD"
     asset_class: "Sovereign Bond"
     sub_class: "US Rates Short"
-    inception_date: "2002-07-22"
-    notes: "iShares 1-3 Year Treasury Bond ETF. Low duration, rate-sensitive."
+    inception_date: "2007-04-10"
+    notes: >
+      Vanguard Short-Term Bond ETF (BSV). IMPORTANT: BSV is not a pure 1-3Y
+      Treasury ETF — it holds ~65% government (Treasuries + agencies) and ~35%
+      investment-grade corporate bonds, duration ~2.8 years. It is a compromise
+      proxy; the original SHY (pure 1-3Y Treasury) is unavailable under current
+      LSEG entitlement as is VGSH. BSV verified working via discover_candidates.py;
+      inception 2007-04-10. NO INDEPENDENT FALLBACK: all other tested candidates
+      (SHY, VGSH, SCHO, IEI, SCHR, FLOT, SPTS) failed in LIVE testing.
+      fallback_ric is set to BSV (same as primary) to signal this explicitly.
+      Sleeve performance will reflect minor IG credit spread sensitivity not
+      present in a pure treasury sleeve.
 
   - id: "us_treasury_medium"
     name: "US Treasuries 7-10Y"
-    primary_ric: "IEF"
-    fallback_ric: "VGIT"
+    primary_ric: "SXRL.DE"
+    fallback_ric: "IS04.DE"
     primary_field: "TR.PriceClose"
     fallback_field: "CF_CLOSE"
-    currency: "USD"
+    currency: "EUR"
     asset_class: "Sovereign Bond"
     sub_class: "US Rates Medium"
-    inception_date: "2002-07-22"
-    notes: "iShares 7-10 Year Treasury Bond ETF. Core duration exposure."
+    inception_date: "2009-12-01"
+    notes: >
+      SPDR Bloomberg 7-10Y US Treasury Bond UCITS ETF (SXRL.DE, Xetra, EUR).
+      LIVE-confirmed: 2009-12-01 to 2026-04-23. Tracks Bloomberg US Treasury
+      7-10 Year Bond Index. EUR-denominated — unhedged EUR/USD FX exposure
+      embedded in returns relative to USD base portfolio. UCITS product;
+      not a US-listed ETF. Fallback: IS04.DE (iShares $ Treasury Bond 7-10yr
+      UCITS ETF, Xetra, EUR), LIVE-confirmed: 2015-01-26 to 2026-04-23.
+      All US-listed alternatives confirmed inaccessible: IEF, VGIT, ITE, IEI,
+      SCHR, GOVT, TLT, SCHZ. UK/NL-listed UCITS also inaccessible: IBTM.L,
+      IBTM.AS, SXRL.L, VUST.L, IBTM. VDTY.L works (2016-02-25) but has
+      shorter history than SXRL.DE and was not promoted.
 
   - id: "euro_govt"
     name: "Euro Government Bonds"
@@ -227,17 +257,24 @@ sleeves:
 
   - id: "euro_hy_credit"
     name: "Euro High Yield Credit"
-    primary_ric: "IHYG.AS"
-    fallback_ric: "HYB.DE"
+    primary_ric: "IHYG.L"
+    fallback_ric: "SHYU.L"
     primary_field: "TR.PriceClose"
     fallback_field: "CF_CLOSE"
-    currency: "EUR"
+    currency: "GBP"
     asset_class: "Credit"
     sub_class: "Euro HY Credit"
-    inception_date: "2010-02-25"
+    inception_date: "2010-09-06"
     notes: >
-      iShares Euro High Yield Corporate Bond ETF (Amsterdam).
-      ENTITLEMENT RISK: exchange suffix. History only from 2010.
+      iShares Euro High Yield Corporate Bond UCITS ETF (IHYG.L, London-listed,
+      GBP share class). Tracks iBoxx EUR Liquid High Yield index — same economic
+      exposure as the original IHYG.AS. IHYG.L verified working via
+      discover_candidates.py; inception 2010-09-06. Fallback: SHYU.L (iShares
+      Euro HY Corp Bond UCITS ETF USD Hedged, London, inception 2011-09-14) —
+      the USD-hedged class removes GBP currency noise and is more appropriate
+      for a USD-base portfolio; use SHYU.L if currency purity matters more than
+      the extra 13 months of history. IHYG.AS and HYB.DE both unavailable under
+      current LSEG entitlement.
 
   # ─── REAL ASSETS & COMMODITIES ───────────────────────────────────────────
 
@@ -270,17 +307,19 @@ sleeves:
 
   - id: "broad_commodities"
     name: "Broad Commodities"
-    primary_ric: "PDBC"
-    fallback_ric: "DJP"
+    primary_ric: "DJP"
+    fallback_ric: "PDBC"
     primary_field: "TR.PriceClose"
     fallback_field: "CF_CLOSE"
     currency: "USD"
     asset_class: "Commodity"
     sub_class: "Broad Commodities"
-    inception_date: "2014-11-07"
+    inception_date: "2006-10-23"
     notes: >
-      Invesco Optimum Yield Diversified Commodity Strategy ETF.
-      DJP (iPath Bloomberg Commodity) is older fallback (inception 2006).
+      iPath Bloomberg Commodity Index Total Return ETN (DJP). Verified working
+      under current LSEG entitlement via validate_universe.py. PDBC (Invesco
+      Optimum Yield) set as fallback — PDBC returns 0 rows under this entitlement.
+      DJP inception 2006-10-23; longer history than PDBC (2014).
       Diversified: energy, metals, agriculture.
 
   - id: "reits"
