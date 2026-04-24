@@ -242,7 +242,45 @@ Five linear first-order approximations across risk buckets: equity severe (−25
 
 ### Charts (`outputs/charts/`)
 
-Cumulative performance · Drawdown · Rolling volatility · Rolling Sharpe · Monthly returns heatmap · Asset allocation · Contribution bar · Stress comparison · VaR distribution · Correlation heatmap
+## 📊 Chart Gallery
+
+### Performance Analysis
+
+<p align="center">
+  <img src="docs/images/cumulative_performance.png" width="48%" alt="Cumulative Performance" />
+  <img src="docs/images/drawdown.png" width="48%" alt="Drawdown Series" />
+</p>
+
+### Risk Metrics
+
+<p align="center">
+  <img src="docs/images/rolling_volatility.png" width="48%" alt="Rolling Volatility" />
+  <img src="docs/images/rolling_sharpe.png" width="48%" alt="Rolling Sharpe Ratio" />
+</p>
+
+<p align="center">
+  <img src="docs/images/var_distribution.png" width="48%" alt="VaR Distribution" />
+</p>
+
+### Portfolio Composition
+
+<p align="center">
+  <img src="docs/images/asset_allocation.png" width="48%" alt="Asset Allocation" />
+  <img src="docs/images/contribution_bar.png" width="48%" alt="Risk Contribution" />
+</p>
+
+### Correlation & Stress Testing
+
+<p align="center">
+  <img src="docs/images/correlation_heatmap.png" width="48%" alt="Correlation Matrix" />
+  <img src="docs/images/stress_comparison.png" width="48%" alt="Stress Testing" />
+</p>
+
+### Monthly Performance
+
+<p align="center">
+  <img src="docs/images/monthly_returns_heatmap.png" width="70%" alt="Monthly Returns Heatmap" />
+</p>
 
 ---
 
